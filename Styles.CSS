@@ -624,3 +624,180 @@ input, select, textarea { font-family: inherit; }
 .badge-medium     { background: #fffbeb; color: #d97706; }
 .badge-high       { background: #fef2f2; color: #dc2626; }
 .badge-critical   { background: #fdf4ff; color: #9333ea; }
+
+/* ===========================
+   ROOM GRID
+   =========================== */
+.room-stats-mini {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+ 
+.room-mini-stat {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.82rem;
+  color: var(--gray-600);
+}
+ 
+.room-mini-dot {
+  width: 10px; height: 10px;
+  border-radius: 50%;
+}
+ 
+.dot-available   { background: var(--success); }
+.dot-occupied    { background: var(--coral-500); }
+.dot-maintenance { background: var(--warning); }
+ 
+.room-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  gap: 1rem;
+}
+ 
+.room-card {
+  background: var(--white);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--gray-200);
+  padding: 1.25rem;
+  box-shadow: var(--shadow-sm);
+  transition: box-shadow var(--transition), transform var(--transition);
+  position: relative;
+}
+ 
+.room-card:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); }
+ 
+.room-card-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 0.75rem;
+}
+ 
+.room-number {
+  font-family: var(--font-display);
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--teal-700);
+  line-height: 1;
+}
+ 
+.room-type-label {
+  font-size: 0.72rem;
+  color: var(--gray-400);
+  margin-top: 2px;
+}
+ 
+.room-status-dot {
+  width: 10px; height: 10px;
+  border-radius: 50%;
+  margin-top: 4px;
+}
+ 
+.room-occupancy-bar {
+  background: var(--gray-100);
+  border-radius: 99px;
+  height: 6px;
+  margin: 0.75rem 0;
+  overflow: hidden;
+}
+ 
+.room-occupancy-fill {
+  height: 100%;
+  border-radius: 99px;
+  background: var(--teal-400);
+  transition: width 0.4s ease;
+}
+ 
+.room-meta {
+  font-size: 0.78rem;
+  color: var(--gray-500);
+  margin-top: 0.5rem;
+}
+ 
+.room-meta strong { color: var(--gray-700); }
+ 
+.room-card-actions {
+  display: flex;
+  gap: 6px;
+  margin-top: 1rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--gray-100);
+}
+ 
+/* ===========================
+   MESS GRID
+   =========================== */
+.mess-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1rem;
+}
+ 
+.mess-card {
+  background: var(--white);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--gray-200);
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+  transition: box-shadow var(--transition);
+}
+ 
+.mess-card:hover { box-shadow: var(--shadow-md); }
+ 
+.mess-card-head {
+  padding: 0.85rem 1.25rem;
+  background: linear-gradient(135deg, var(--teal-500), var(--teal-600));
+  color: var(--white);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+ 
+.mess-day-meal {
+  font-size: 0.8rem;
+  font-weight: 600;
+  opacity: 0.9;
+}
+ 
+.mess-meal-type {
+  font-family: var(--font-display);
+  font-size: 1rem;
+  font-weight: 700;
+}
+ 
+.mess-card-body { padding: 1rem 1.25rem; }
+ 
+.mess-items-list {
+  font-size: 0.85rem;
+  color: var(--gray-700);
+  line-height: 1.7;
+}
+ 
+.mess-card-footer {
+  padding: 0.75rem 1.25rem;
+  border-top: 1px solid var(--gray-100);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+ 
+.vote-section {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+ 
+.vote-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 10px;
+  border-radius: 99px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  transition: background var(--transition);
+}
+ 
