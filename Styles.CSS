@@ -227,3 +227,114 @@ input, select, textarea { font-family: inherit; }
   font-size: 0.85rem;
   flex-shrink: 0;
 }
+
+.warden-name {
+  display: block;
+  font-size: 0.83rem;
+  font-weight: 600;
+  color: var(--gray-800);
+}
+ 
+.warden-role {
+  display: block;
+  font-size: 0.7rem;
+  color: var(--gray-400);
+}
+ 
+.warden-info { flex: 1; min-width: 0; }
+ 
+.logout-btn {
+  color: var(--gray-400);
+  font-size: 0.9rem;
+  padding: 6px;
+  border-radius: var(--radius-sm);
+  transition: color var(--transition), background var(--transition);
+}
+ 
+.logout-btn:hover { color: var(--teal-600); background: var(--teal-50); }
+ 
+/*         MAIN CONTENT       */
+.main-content {
+  margin-left: var(--sidebar-w);
+  flex: 1;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+ 
+/*   TOPBAR    */
+.topbar {
+  height: var(--topbar-h);
+  background: var(--white);
+  border-bottom: 1px solid var(--gray-200);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 1.75rem;
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  gap: 1rem;
+}
+ 
+.topbar-left { display: flex; align-items: center; gap: 1rem; }
+.topbar-right { display: flex; align-items: center; gap: 0.75rem; }
+ 
+.sidebar-toggle {
+  display: none;
+  width: 36px; height: 36px;
+  border-radius: var(--radius-sm);
+  color: var(--gray-600);
+  font-size: 1rem;
+  align-items: center; justify-content: center;
+  background: var(--gray-100);
+}
+
+.page-title {
+  font-family: var(--font-display);
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--teal-800);
+  line-height: 1;
+}
+ 
+.page-breadcrumb {
+  font-size: 0.75rem;
+  color: var(--gray-400);
+  display: block;
+  margin-top: 2px;
+}
+ 
+.topbar-time {
+  font-size: 0.82rem;
+  color: var(--gray-500);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+ 
+.icon-btn {
+  width: 36px; height: 36px;
+  border-radius: var(--radius-sm);
+  display: flex; align-items: center; justify-content: center;
+  color: var(--gray-500);
+  font-size: 0.95rem;
+  transition: background var(--transition), color var(--transition);
+}
+ 
+.icon-btn:hover { background: var(--teal-50); color: var(--teal-600); }
+ 
+/*             PAGES                 */
+.page {
+  display: none;
+  padding: 1.75rem;
+  flex: 1;
+  animation: fadeIn 0.2s ease;
+}
+ 
+.page.active { display: block; }
+ 
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+ 
