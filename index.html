@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>HostelSync — Unified Hostel Operations</title>
+  <link rel="stylesheet" href="styles.css" />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet"/>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet"/>
+</head>
+<body>
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-brand">
+      <div class="brand-icon"><i class="fa-solid fa-building-columns"></i></div>
+      <div class="brand-text">
+        <span class="brand-name">HostelSync</span>
+        <span class="brand-sub">Operations Hub</span>
+      </div>
+    </div>
+
+     <nav class="sidebar-nav">
+      <span class="nav-section-label">Main</span>
+      <a href="#" class="nav-item active" data-page="dashboard">
+        <i class="fa-solid fa-chart-treemap"></i>
+        <span>Dashboard</span>
+      </a>
+      <a href="#" class="nav-item" data-page="gatepasses">
+        <i class="fa-solid fa-door-open"></i>
+        <span>Gate Passes</span>
+        <span class="nav-badge" id="badge-gate">0</span>
+      </a>
+      <a href="#" class="nav-item" data-page="rooms">
+        <i class="fa-solid fa-bed"></i>
+        <span>Room Management</span>
+      </a>
+      <a href="#" class="nav-item" data-page="mess">
+        <i class="fa-solid fa-utensils"></i>
+        <span>Mess & Menu</span>
+      </a>
+      <a href="#" class="nav-item" data-page="visitors">
+        <i class="fa-solid fa-users"></i>
+        <span>Visitor Log</span>
+      </a>
+
+       <span class="nav-section-label" style="margin-top:1.5rem;">Management</span>
+      <a href="#" class="nav-item" data-page="complaints">
+        <i class="fa-solid fa-triangle-exclamation"></i>
+        <span>Complaints</span>
+        <span class="nav-badge urgent" id="badge-complaint">0</span>
+      </a>
+      <a href="#" class="nav-item" data-page="notifications">
+        <i class="fa-solid fa-bell"></i>
+        <span>SMS Notifications</span>
+      </a>
+      <a href="#" class="nav-item" data-page="attendance">
+        <i class="fa-solid fa-clipboard-check"></i>
+        <span>Attendance</span>
+      </a>
+    </nav>
+     <div class="sidebar-footer">
+      <div class="warden-avatar">
+        <i class="fa-solid fa-shield-halved"></i>
+      </div>
+      <div class="warden-info">
+        <span class="warden-name" id="warden-name-display">Warden</span>
+        <span class="warden-role">Hostel Warden</span>
+      </div>
+      <button class="logout-btn" onclick="showSetupModal()"><i class="fa-solid fa-gear"></i></button>
+    </div>
+  </aside>
+ 
+  <!-- MAIN CONTENT -->
+  <main class="main-content">
+ 
+    <!-- TOPBAR -->
+    <header class="topbar">
+      <div class="topbar-left">
+        <button class="sidebar-toggle" id="sidebarToggle"><i class="fa-solid fa-bars"></i></button>
+        <div class="page-title-area">
+          <h1 class="page-title" id="pageTitle">Dashboard</h1>
+          <span class="page-breadcrumb" id="pageBreadcrumb">Overview & Quick Stats</span>
+        </div>
+      </div>
+      <div class="topbar-right">
+        <div class="topbar-time" id="liveClock"></div>
+        <button class="icon-btn" onclick="showPage('notifications')"><i class="fa-solid fa-bell"></i></button>
+        <button class="btn-primary small" onclick="showQuickAction()">
+          <i class="fa-solid fa-plus"></i> Quick Add
+        </button>
+      </div>
+    </header>
+  <!-- DASHBOARD PAGE  -->
+
+   <section class="page active" id="page-dashboard">
+      <div class="stats-grid" id="statsGrid">
+        <!-- populated by JS -->
+      </div>
+ 
+      <div class="dashboard-grid">
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title">Pending Gate Pass Approvals</h3>
+            <button class="btn-text" onclick="showPage('gatepasses')">View all →</button>
+          </div>
+          <div class="empty-state" id="dash-gatepass-list">
+            <i class="fa-solid fa-check-circle" style="font-size:2rem; color:var(--teal-300);"></i>
+            <p>No pending approvals</p>
+          </div>
+        </div>
+ 
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title">Active Complaints (SLA)</h3>
+            <button class="btn-text" onclick="showPage('complaints')">View all →</button>
+          </div>
+          <div class="empty-state" id="dash-complaint-list">
+            <i class="fa-solid fa-face-smile" style="font-size:2rem; color:var(--teal-300);"></i>
+            <p>No active complaints</p>
+          </div>
+        </div>
+ 
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title">Today's Visitors</h3>
+            <button class="btn-text" onclick="showPage('visitors')">View all →</button>
+          </div>
+          <div class="empty-state" id="dash-visitor-list">
+            <i class="fa-solid fa-person-walking-arrow-right" style="font-size:2rem; color:var(--teal-300);"></i>
+            <p>No visitors logged today</p>
+          </div>
+        </div>
+ 
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title">Mess Vote — Today</h3>
+            <button class="btn-text" onclick="showPage('mess')">View all →</button>
+          </div>
+          <div class="empty-state" id="dash-mess-summary">
+            <i class="fa-solid fa-utensils" style="font-size:2rem; color:var(--teal-300);"></i>
+            <p>No menu items added yet</p>
+          </div>
+        </div>
+      </div>
+    </section>
+    
+</body>
