@@ -379,4 +379,334 @@
       </div>
     </div>
   </div>
+
+   <!-- Gate Pass Modal -->
+  <div class="modal-overlay" id="modal-gatepass">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>New Gate Pass Request</h3>
+        <button class="modal-close" onclick="closeModal('modal-gatepass')"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="modal-body">
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Student Name *</label>
+            <input type="text" class="input-field" id="gp-student" placeholder="Full name"/>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Room Number *</label>
+            <input type="text" class="input-field" id="gp-room" placeholder="e.g. 204"/>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Destination *</label>
+          <input type="text" class="input-field" id="gp-destination" placeholder="Where are they going?"/>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Out Date & Time *</label>
+            <input type="datetime-local" class="input-field" id="gp-out"/>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Return Date & Time *</label>
+            <input type="datetime-local" class="input-field" id="gp-return"/>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Reason *</label>
+          <select class="input-field" id="gp-reason">
+            <option value="">Select reason</option>
+            <option>Medical Appointment</option>
+            <option>Family Visit</option>
+            <option>Official Work</option>
+            <option>Personal</option>
+            <option>Emergency</option>
+            <option>Other</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Parent Phone (for SMS)</label>
+          <input type="tel" class="input-field" id="gp-parentphone" placeholder="+91 XXXXX XXXXX"/>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Additional Notes</label>
+          <textarea class="input-field" id="gp-notes" rows="2" placeholder="Any additional info…"></textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-ghost" onclick="closeModal('modal-gatepass')">Cancel</button>
+        <button class="btn-primary" onclick="submitGatePass()">Submit Request</button>
+      </div>
+    </div>
+  </div>
+ 
+  <!-- Room Modal -->
+  <div class="modal-overlay" id="modal-room">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>Add / Edit Room</h3>
+        <button class="modal-close" onclick="closeModal('modal-room')"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="modal-body">
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Room Number *</label>
+            <input type="text" class="input-field" id="room-number" placeholder="e.g. 101"/>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Floor</label>
+            <input type="text" class="input-field" id="room-floor" placeholder="e.g. Ground, 1st"/>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Capacity *</label>
+            <input type="number" class="input-field" id="room-capacity" placeholder="2" min="1" max="10"/>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Room Type</label>
+            <select class="input-field" id="room-type">
+              <option>Single</option>
+              <option>Double</option>
+              <option>Triple</option>
+              <option>Dormitory</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Occupants (Names, comma separated)</label>
+          <input type="text" class="input-field" id="room-occupants" placeholder="e.g. Rahul Sharma, Ankit Verma"/>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Room Status</label>
+          <select class="input-field" id="room-status">
+            <option value="available">Available</option>
+            <option value="occupied">Occupied</option>
+            <option value="maintenance">Under Maintenance</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Amenities</label>
+          <input type="text" class="input-field" id="room-amenities" placeholder="e.g. AC, Attached Bath, Balcony"/>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-ghost" onclick="closeModal('modal-room')">Cancel</button>
+        <button class="btn-primary" onclick="saveRoom()">Save Room</button>
+      </div>
+    </div>
+  </div>
+ 
+  <!-- Mess Modal -->
+  <div class="modal-overlay" id="modal-mess">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>Add Menu Item</h3>
+        <button class="modal-close" onclick="closeModal('modal-mess')"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="modal-body">
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Day *</label>
+            <select class="input-field" id="mess-day">
+              <option>Monday</option><option>Tuesday</option><option>Wednesday</option>
+              <option>Thursday</option><option>Friday</option><option>Saturday</option><option>Sunday</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Meal Type *</label>
+            <select class="input-field" id="mess-meal">
+              <option>Breakfast</option>
+              <option>Lunch</option>
+              <option>Snacks</option>
+              <option>Dinner</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Menu Items *</label>
+          <textarea class="input-field" id="mess-items" rows="3" placeholder="e.g. Idli, Sambar, Coconut Chutney, Tea"></textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Special Notes</label>
+          <input type="text" class="input-field" id="mess-notes" placeholder="e.g. Special on festival day"/>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-ghost" onclick="closeModal('modal-mess')">Cancel</button>
+        <button class="btn-primary" onclick="saveMessItem()">Add to Menu</button>
+      </div>
+    </div>
+  </div>
+ 
+  <!-- Visitor Modal -->
+  <div class="modal-overlay" id="modal-visitor">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>Log Visitor</h3>
+        <button class="modal-close" onclick="closeModal('modal-visitor')"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="modal-body">
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Visitor Name *</label>
+            <input type="text" class="input-field" id="vis-name" placeholder="Full name"/>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Relation to Student *</label>
+            <select class="input-field" id="vis-relation">
+              <option>Parent</option><option>Guardian</option><option>Sibling</option>
+              <option>Relative</option><option>Friend</option><option>Official</option><option>Other</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Student Name *</label>
+            <input type="text" class="input-field" id="vis-student" placeholder="Student being visited"/>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Room Number *</label>
+            <input type="text" class="input-field" id="vis-room" placeholder="e.g. 204"/>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Purpose of Visit *</label>
+          <input type="text" class="input-field" id="vis-purpose" placeholder="e.g. Routine Visit, Medical, Documents"/>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">In Time</label>
+            <input type="time" class="input-field" id="vis-in"/>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Visitor Phone</label>
+            <input type="tel" class="input-field" id="vis-phone" placeholder="+91 XXXXX XXXXX"/>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-ghost" onclick="closeModal('modal-visitor')">Cancel</button>
+        <button class="btn-primary" onclick="logVisitor()">Log Visitor</button>
+      </div>
+    </div>
+  </div>
+ 
+  <!-- Complaint Modal -->
+  <div class="modal-overlay" id="modal-complaint">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>File a Complaint</h3>
+        <button class="modal-close" onclick="closeModal('modal-complaint')"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="modal-body">
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Complainant Name *</label>
+            <input type="text" class="input-field" id="comp-name" placeholder="Student / Staff name"/>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Room No.</label>
+            <input type="text" class="input-field" id="comp-room" placeholder="e.g. 204"/>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Category *</label>
+            <select class="input-field" id="comp-category">
+              <option>Plumbing</option><option>Electrical</option><option>Housekeeping</option>
+              <option>Security</option><option>Mess / Food</option><option>Noise</option>
+              <option>Internet</option><option>Furniture</option><option>Other</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Priority</label>
+            <select class="input-field" id="comp-priority">
+              <option value="low">Low</option>
+              <option value="medium" selected>Medium</option>
+              <option value="high">High</option>
+              <option value="critical">Critical</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Description *</label>
+          <textarea class="input-field" id="comp-description" rows="3" placeholder="Describe the issue in detail…"></textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label">SLA (Resolution deadline)</label>
+          <input type="datetime-local" class="input-field" id="comp-sla"/>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-ghost" onclick="closeModal('modal-complaint')">Cancel</button>
+        <button class="btn-primary" onclick="submitComplaint()">File Complaint</button>
+      </div>
+    </div>
+  </div>
+   <!-- Student Modal -->
+  <div class="modal-overlay" id="modal-student">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>Register Student</h3>
+        <button class="modal-close" onclick="closeModal('modal-student')"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="modal-body">
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Student Name *</label>
+            <input type="text" class="input-field" id="stu-name" placeholder="Full name"/>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Roll Number *</label>
+            <input type="text" class="input-field" id="stu-roll" placeholder="e.g. 2024CS001"/>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Room Number *</label>
+            <input type="text" class="input-field" id="stu-room" placeholder="e.g. 204"/>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Student Phone</label>
+            <input type="tel" class="input-field" id="stu-phone" placeholder="+91 XXXXX XXXXX"/>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Parent Phone *</label>
+          <input type="tel" class="input-field" id="stu-parent" placeholder="+91 XXXXX XXXXX"/>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Department</label>
+          <input type="text" class="input-field" id="stu-dept" placeholder="e.g. Computer Science"/>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-ghost" onclick="closeModal('modal-student')">Cancel</button>
+        <button class="btn-primary" onclick="saveStudent()">Register Student</button>
+      </div>
+    </div>
+  </div>
+ 
+  <!-- SMS Modal -->
+  <div class="modal-overlay" id="modal-sms">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>Send SMS to Parent</h3>
+        <button class="modal-close" onclick="closeModal('modal-sms')"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="modal-body">
+        <p style="color:var(--gray-500); font-size:0.85rem; margin-bottom:1rem;">Use the SMS Notifications page for composing and logging messages.</p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-primary" onclick="showPage('notifications'); closeModal('modal-sms')">Go to SMS Page</button>
+      </div>
+    </div>
+  </div>
+ 
+  <!-- Toast -->
+  <div class="toast" id="toast"></div>
+ 
+  <script src="app.js"></script>
 </body>
+</html>
