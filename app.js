@@ -567,3 +567,419 @@ function renderMess(filter) {
     </div>
   `).join('');
 }
+
+/* ── VISITORS ── */
+function openVisitorModal() {
+  clearForm(['vis-name','vis-student','vis-room','vis-purpose','vis-phone']);
+  document.getElementById('vis-relation').selectedIndex = 0;
+  document.getElementById('vis-in').value = new Date().toTimeString().slice(0,5);
+  openModal('modal-visitor');
+}
+
+function logVisitor() {
+  const name = v('vis-name');
+  const student = v('vis-student');
+  const room = v('vis-room');
+  const purpose = v('vis-purpose');
+  if (!name || !student || !room || !purpose) return showToast('Please fill all required fields.', 'error');
+
+  state.visitors.unshift({
+    id: uid(),
+    name, student, room, purpose,
+    relation: document.getElementById('vis-relation').value,
+    inTime: v('vis-in'),
+    phone: v('vis-phone'),
+    outTime: null,
+    date: todayStr(),
+  });
+  saveState();
+  closeModal('modal-visitor');
+  showToast('Visitor logged!', 'success');
+  renderVisitors();
+  renderDashboard();
+}
+
+function markVisitorOut(id) {
+  const vis = state.visitors.find(v => v.id === id);
+  if (!vis) return;
+  vis.outTime = new Date().toTimeString().slice(0,5);
+  saveState();
+  renderVisitors();
+  renderDashboard();
+  showToast('Visitor marked as exited.', 'info');
+}
+
+function deleteVisitor(id) {
+  if (!confirm('Remove this visitor entry?')) return;
+  state.visitors = state.visitors.filter(v => v.id !== id);
+  saveState();
+  renderVisitors();
+  renderDashboard();
+}
+
+function renderVisitors() {
+  const dateFilter = document.getElementById('visitorDateFilter').value;
+  let list = state.visitors;
+  if (dateFilter) {
+    list = list.filter(v => v.date === dateFilter);
+  }
+
+  const tbody = document.getElementById('visitorTableBody');
+  if (list.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="9" class="table-empty">No visitors found for the selected date.</td></tr>`;
+    return;
+  }
+  tbody.innerHTML = list.map(vis => `
+    <tr>
+      <td><strong>${vis.name}</strong></td>
+      <td>${vis.relation}</td>
+      <td>${vis.student}</td>
+      <td>${vis.room}</td>
+      <td>${vis.purpose}</td>
+      <td>${vis.inTime || '—'}</td>
+      <td>${vis.outTime || '—'}</td>
+      <td><span class="badge badge-${vis.outTime ? 'left' : 'inside'}">${vis.outTime ? 'Left' : 'Inside'}</span></td>
+      <td>
+        <div class="td-actions">
+          ${!vis.outTime ? `<button class="btn-ghost" style="font-size:0.75rem;padding:4px 8px;" onclick="markVisitorOut('${vis.id}')">Mark Out</button>` : ''}
+          <button class="btn-icon danger" onclick="deleteVisitor('${vis.id}')"><i class="fa-solid fa-trash"></i></button>
+        </div>
+      </td>
+    </tr>
+  `).join('');
+}
+
+/* ── COMPLAINTS ── */
+function openComplaintModal() {
+  clearForm(['comp-name','comp-room','comp-description','comp-sla']);
+  document.getElementById('comp-category').selectedIndex = 0;
+  document.getElementById('comp-priority').value = 'medium';
+  // Default SLA: 48hrs from now
+  const slaDefault = new Date(Date.now() + 48 * 3600000);
+  document.getElementById('comp-sla').value = slaDefault.toISOString().slice(0,16);
+  openModal('modal-complaint');
+}
+
+function submitComplaint() {
+  const name = v('comp-name');
+  const description = v('comp-description');
+  const category = document.getElementById('comp-category').value;
+  if (!name || !description) return showToast('Name and description are required.', 'error');
+
+  state.complaints.unshift({
+    id: uid(),
+    name, room: v('comp-room'), category,
+    priority: document.getElementById('comp-priority').value,
+    description,
+    sla: v('comp-sla'),
+    status: 'open',
+    createdAt: new Date().toISOString(),
+  });
+  saveState();
+  closeModal('modal-complaint');
+  showToast('Complaint filed!', 'info');
+  renderComplaints('all');
+  renderDashboard();
+}
+
+function updateComplaintStatus(id, status) {
+  const c = state.complaints.find(c => c.id === id);
+  if (!c) return;
+  c.status = status;
+  if (status === 'resolved') c.resolvedAt = new Date().toISOString();
+  saveState();
+  showToast(`Complaint marked as ${status}.`, 'success');
+  renderComplaints(currentCompFilter);
+  renderDashboard();
+}
+
+function deleteComplaint(id) {
+  if (!confirm('Delete this complaint?')) return;
+  state.complaints = state.complaints.filter(c => c.id !== id);
+  saveState();
+  renderComplaints(currentCompFilter);
+  renderDashboard();
+}
+
+let currentCompFilter = 'all';
+function filterComplaints(filter, btn) {
+  currentCompFilter = filter;
+  document.querySelectorAll('#page-complaints .filter-tab').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+  renderComplaints(filter);
+}
+
+function renderComplaints(filter) {
+  let list = state.complaints;
+  if (filter !== 'all') list = list.filter(c => c.status === filter);
+
+  const container = document.getElementById('complaintList');
+  if (list.length === 0) {
+    container.innerHTML = `<div class="empty-state"><i class="fa-solid fa-circle-check" style="font-size:2.5rem;color:var(--teal-300);"></i><p>No complaints in this category.</p></div>`;
+    return;
+  }
+
+  container.innerHTML = list.map(c => {
+    const slaStatus = getSLAStatus(c.sla);
+    return `
+      <div class="complaint-card priority-${c.priority}">
+        <div>
+          <div class="comp-title">${c.category} — ${c.name}</div>
+          <div class="comp-meta">
+            <span>Room ${c.room || 'N/A'}</span>
+            <span class="badge badge-${c.priority}" style="font-size:0.68rem;">${c.priority}</span>
+            <span>${fmtDate(c.createdAt)}</span>
+          </div>
+          <div class="comp-desc">${c.description}</div>
+          ${c.sla ? `<div class="comp-sla ${slaStatus.cls}"><i class="fa-solid fa-clock"></i> SLA: ${fmtDateTime(c.sla)} ${slaStatus.label}</div>` : ''}
+        </div>
+        <div class="comp-actions">
+          <span class="badge badge-${c.status}">${c.status}</span>
+          ${c.status !== 'resolved' ? `
+            <select class="input-field" style="font-size:0.75rem;padding:4px 8px;" onchange="updateComplaintStatus('${c.id}', this.value)">
+              <option value="">Update…</option>
+              <option value="open">Open</option>
+              <option value="in-progress">In Progress</option>
+              <option value="escalated">Escalated</option>
+              <option value="resolved">Resolved</option>
+            </select>
+          ` : ''}
+          <button class="btn-icon danger" onclick="deleteComplaint('${c.id}')"><i class="fa-solid fa-trash"></i></button>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function getSLAStatus(sla) {
+  if (!sla) return { cls: '', label: '' };
+  const now = new Date();
+  const slaDate = new Date(sla);
+  const diffMs = slaDate - now;
+  if (diffMs < 0) return { cls: 'sla-overdue', label: '⚠ Overdue' };
+  if (diffMs < 6 * 3600000) return { cls: 'sla-near', label: '⚡ Due soon' };
+  return { cls: '', label: '' };
+}
+
+/* ── SMS NOTIFICATIONS ── */
+const smsTemplates = {
+  gatepass_approved: (name) => `Dear Parent, Gate pass for ${name || '[Student]'} has been APPROVED. They are permitted to leave the hostel premises. - HostelSync`,
+  gatepass_rejected: (name) => `Dear Parent, Gate pass request for ${name || '[Student]'} has been REJECTED by the warden. Please contact the hostel for details. - HostelSync`,
+  visitor_arrived:   (name) => `Dear Parent, A visitor has arrived at the hostel to meet ${name || '[Student]'}. Please contact the hostel if this was not expected. - HostelSync`,
+  complaint_resolved:(name) => `Dear Parent, A complaint raised regarding ${name || '[Student]'} has been resolved by the warden. - HostelSync`,
+  late_return:       (name) => `ALERT: ${name || '[Student]'} has not returned to the hostel by the expected time. Please contact the hostel immediately. - HostelSync`,
+  custom:            ()     => '',
+};
+
+function fillSMSTemplate() {
+  const tpl = document.getElementById('smsTemplateSelect').value;
+  const name = document.getElementById('smsStudentName').value.trim();
+  if (smsTemplates[tpl]) {
+    document.getElementById('smsMessage').value = smsTemplates[tpl](name);
+  }
+}
+
+function logSMS() {
+  const phone   = document.getElementById('smsPhone').value.trim();
+  const student = document.getElementById('smsStudentName').value.trim();
+  const message = document.getElementById('smsMessage').value.trim();
+  const event   = document.getElementById('smsTemplateSelect').value;
+  if (!phone || !message) return showToast('Phone number and message are required.', 'error');
+
+  state.smsLog.unshift({ id: uid(), phone, student, message, event, sentAt: new Date().toISOString() });
+  saveState();
+  showToast(`SMS logged for ${student || phone}`, 'success');
+  document.getElementById('smsPhone').value = '';
+  document.getElementById('smsStudentName').value = '';
+  document.getElementById('smsMessage').value = '';
+  document.getElementById('smsTemplateSelect').selectedIndex = 0;
+  renderSMSLog();
+}
+
+function autoLogSMS(event, phone, student) {
+  if (!phone) return;
+  const fn = smsTemplates[event];
+  const message = fn ? fn(student) : '';
+  if (!message) return;
+  state.smsLog.unshift({ id: uid(), phone, student, message, event, sentAt: new Date().toISOString(), auto: true });
+  saveState();
+}
+
+function renderSMSLog() {
+  const el = document.getElementById('smsLogList');
+  if (state.smsLog.length === 0) {
+    el.innerHTML = `<div class="empty-state"><i class="fa-solid fa-comment-sms" style="font-size:2rem;color:var(--teal-300);"></i><p>No SMS sent yet.</p></div>`;
+    return;
+  }
+  el.innerHTML = '';
+  state.smsLog.slice(0, 30).forEach(sms => {
+    const div = document.createElement('div');
+    div.className = 'sms-log-item';
+    div.innerHTML = `
+      <div class="sms-event">${formatEventLabel(sms.event)} ${sms.auto ? '<span style="font-size:0.65rem;background:var(--teal-50);color:var(--teal-600);padding:1px 6px;border-radius:99px;">auto</span>' : ''}</div>
+      <div class="sms-msg">${sms.message}</div>
+      <div class="sms-ts">📱 ${sms.phone} · ${sms.student ? sms.student + ' · ' : ''}${fmtDate(sms.sentAt)}</div>
+    `;
+    el.appendChild(div);
+  });
+}
+
+function formatEventLabel(event) {
+  const map = { gatepass_approved: 'Gate Pass Approved', gatepass_rejected: 'Gate Pass Rejected', visitor_arrived: 'Visitor Arrived', complaint_resolved: 'Complaint Resolved', late_return: 'Late Return Alert', custom: 'Custom Message' };
+  return map[event] || event || 'SMS';
+}
+
+/* ── ATTENDANCE ── */
+function initAttendanceDate() {
+  document.getElementById('attendanceDateSelect').value = todayStr();
+  document.getElementById('attendanceDateSelect').addEventListener('change', renderAttendance);
+}
+
+function openStudentModal() {
+  clearForm(['stu-name','stu-roll','stu-room','stu-phone','stu-parent','stu-dept']);
+  openModal('modal-student');
+}
+
+function saveStudent() {
+  const name = v('stu-name');
+  const roll = v('stu-roll');
+  const room = v('stu-room');
+  if (!name || !roll || !room) return showToast('Name, Roll No., and Room are required.', 'error');
+
+  state.students.push({ id: uid(), name, roll, room, phone: v('stu-phone'), parentPhone: v('stu-parent'), dept: v('stu-dept') });
+  saveState();
+  closeModal('modal-student');
+  showToast('Student registered!', 'success');
+  renderAttendance();
+  renderDashboard();
+}
+
+function markAttendance(studentId, status) {
+  const date = document.getElementById('attendanceDateSelect').value || todayStr();
+  if (!state.attendance[date]) state.attendance[date] = {};
+  state.attendance[date][studentId] = status;
+  saveState();
+  renderAttendance();
+}
+
+function deleteStudent(id) {
+  if (!confirm('Remove this student?')) return;
+  state.students = state.students.filter(s => s.id !== id);
+  saveState();
+  renderAttendance();
+  renderDashboard();
+  showToast('Student removed.', 'info');
+}
+
+function renderAttendance() {
+  const date = document.getElementById('attendanceDateSelect').value || todayStr();
+  const tbody = document.getElementById('attendanceTableBody');
+  if (state.students.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="7" class="table-empty">No students registered. Click "Add Student" to begin.</td></tr>`;
+    return;
+  }
+  const dayRecord = state.attendance[date] || {};
+  tbody.innerHTML = state.students.map(s => {
+    const att = dayRecord[s.id] || '';
+    return `
+      <tr>
+        <td><strong>${s.name}</strong>${s.dept ? `<br><span style="font-size:0.73rem;color:var(--gray-400);">${s.dept}</span>` : ''}</td>
+        <td>${s.room}</td>
+        <td>${s.roll}</td>
+        <td>${s.phone || '—'}</td>
+        <td>${s.parentPhone || '—'}</td>
+        <td>
+          ${att ? `<span class="badge badge-${att}">${att}</span>` : '<span style="color:var(--gray-400);font-size:0.8rem;">Not marked</span>'}
+        </td>
+        <td>
+          <div class="attendance-toggle">
+            <button class="att-btn att-present ${att==='present'?'active':''}" onclick="markAttendance('${s.id}','present')">P</button>
+            <button class="att-btn att-absent ${att==='absent'?'active':''}" onclick="markAttendance('${s.id}','absent')">A</button>
+            <button class="att-btn att-leave ${att==='leave'?'active':''}" onclick="markAttendance('${s.id}','leave')">L</button>
+            <button class="btn-icon danger" style="margin-left:4px;" onclick="deleteStudent('${s.id}')"><i class="fa-solid fa-trash"></i></button>
+          </div>
+        </td>
+      </tr>
+    `;
+  }).join('');
+}
+
+/* ── BADGES ── */
+function updateBadges() {
+  const pending = state.gatePasses.filter(g => g.status === 'pending').length;
+  const urgent  = state.complaints.filter(c => c.status !== 'resolved' && (c.priority === 'critical' || c.priority === 'high')).length;
+
+  const gpBadge = document.getElementById('badge-gate');
+  gpBadge.textContent = pending;
+  gpBadge.style.display = pending > 0 ? 'inline' : 'none';
+
+  const compBadge = document.getElementById('badge-complaint');
+  compBadge.textContent = urgent;
+  compBadge.style.display = urgent > 0 ? 'inline' : 'none';
+}
+
+/* ── QUICK ACTION ── */
+function showQuickAction() {
+  openGatePassModal();
+}
+
+/* ── MODAL HELPERS ── */
+function openModal(id) {
+  document.getElementById(id).classList.add('open');
+}
+
+function closeModal(id) {
+  document.getElementById(id).classList.remove('open');
+}
+
+// Close modal on overlay click
+document.querySelectorAll('.modal-overlay').forEach(overlay => {
+  overlay.addEventListener('click', (e) => {
+    if (e.target === overlay) overlay.classList.remove('open');
+  });
+});
+
+/* ── TOAST ── */
+function showToast(msg, type = 'info') {
+  const toast = document.getElementById('toast');
+  toast.textContent = msg;
+  toast.className = `toast ${type} show`;
+  setTimeout(() => { toast.className = 'toast'; }, 3000);
+}
+
+/* ── UTILS ── */
+function uid() {
+  return Date.now().toString(36) + Math.random().toString(36).substr(2, 5);
+}
+
+function todayStr() {
+  return new Date().toISOString().slice(0, 10);
+}
+
+function v(id) {
+  return document.getElementById(id)?.value?.trim() || '';
+}
+
+function setVal(id, val) {
+  const el = document.getElementById(id);
+  if (el) el.value = val || '';
+}
+
+function clearForm(ids) {
+  ids.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = '';
+  });
+}
+
+function fmtDate(iso) {
+  if (!iso) return '—';
+  return new Date(iso).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
+}
+
+function fmtDateTime(iso) {
+  if (!iso) return '—';
+  try {
+    return new Date(iso).toLocaleString('en-IN', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit', hour12: true });
+  } catch { return iso; }
+}
