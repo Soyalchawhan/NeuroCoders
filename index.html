@@ -144,5 +144,239 @@
         </div>
       </div>
     </section>
+
+     <!-- ======================== GATE PASSES PAGE ======================== -->
+    <section class="page" id="page-gatepasses">
+      <div class="page-actions-bar">
+        <div class="filter-tabs">
+          <button class="filter-tab active" onclick="filterGatePasses('all', this)">All</button>
+          <button class="filter-tab" onclick="filterGatePasses('pending', this)">Pending</button>
+          <button class="filter-tab" onclick="filterGatePasses('approved', this)">Approved</button>
+          <button class="filter-tab" onclick="filterGatePasses('rejected', this)">Rejected</button>
+        </div>
+        <button class="btn-primary" onclick="openGatePassModal()">
+          <i class="fa-solid fa-plus"></i> New Gate Pass Request
+        </button>
+      </div>
+      <div class="table-card">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Student</th>
+              <th>Room</th>
+              <th>Destination</th>
+              <th>Out</th>
+              <th>Return</th>
+              <th>Reason</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="gatePassTableBody">
+            <tr><td colspan="8" class="table-empty">No gate pass requests yet. Click "New Gate Pass Request" to add one.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+ 
+    <!-- ROOM MANAGEMENT PAGE -->
+    <section class="page" id="page-rooms">
+      <div class="page-actions-bar">
+        <div class="room-stats-mini" id="roomStatsMini"></div>
+        <button class="btn-primary" onclick="openRoomModal()">
+          <i class="fa-solid fa-plus"></i> Add Room
+        </button>
+      </div>
+      <div class="room-grid" id="roomGrid">
+        <div class="empty-state full-width">
+          <i class="fa-solid fa-bed" style="font-size:2.5rem; color:var(--teal-300);"></i>
+          <p>No rooms added yet. Click "Add Room" to get started.</p>
+        </div>
+      </div>
+    </section>
+
+     <!--  MESS & MENU PAGE -->
+    <section class="page" id="page-mess">
+      <div class="page-actions-bar">
+        <div class="filter-tabs">
+          <button class="filter-tab active" onclick="filterMess('all', this)">All Days</button>
+          <button class="filter-tab" onclick="filterMess('Monday', this)">Mon</button>
+          <button class="filter-tab" onclick="filterMess('Tuesday', this)">Tue</button>
+          <button class="filter-tab" onclick="filterMess('Wednesday', this)">Wed</button>
+          <button class="filter-tab" onclick="filterMess('Thursday', this)">Thu</button>
+          <button class="filter-tab" onclick="filterMess('Friday', this)">Fri</button>
+          <button class="filter-tab" onclick="filterMess('Saturday', this)">Sat</button>
+          <button class="filter-tab" onclick="filterMess('Sunday', this)">Sun</button>
+        </div>
+        <button class="btn-primary" onclick="openMessModal()">
+          <i class="fa-solid fa-plus"></i> Add Menu Item
+        </button>
+      </div>
+      <div class="mess-grid" id="messGrid">
+        <div class="empty-state full-width">
+          <i class="fa-solid fa-utensils" style="font-size:2.5rem; color:var(--teal-300);"></i>
+          <p>No menu items added yet. Click "Add Menu Item" to begin.</p>
+        </div>
+      </div>
+    </section>
+ 
+    <!-- VISITOR LOG PAGE-->
+    <section class="page" id="page-visitors">
+      <div class="page-actions-bar">
+        <input type="date" class="input-field" id="visitorDateFilter" onchange="renderVisitors()" style="max-width:200px;"/>
+        <button class="btn-primary" onclick="openVisitorModal()">
+          <i class="fa-solid fa-plus"></i> Log Visitor
+        </button>
+      </div>
+      <div class="table-card">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Visitor Name</th>
+              <th>Relation</th>
+              <th>Student</th>
+              <th>Room</th>
+              <th>Purpose</th>
+              <th>In Time</th>
+              <th>Out Time</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="visitorTableBody">
+            <tr><td colspan="9" class="table-empty">No visitors logged yet.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+ 
+     <!--  COMPLAINTS PAGE  -->
+    <section class="page" id="page-complaints">
+      <div class="page-actions-bar">
+        <div class="filter-tabs">
+          <button class="filter-tab active" onclick="filterComplaints('all', this)">All</button>
+          <button class="filter-tab" onclick="filterComplaints('open', this)">Open</button>
+          <button class="filter-tab" onclick="filterComplaints('in-progress', this)">In Progress</button>
+          <button class="filter-tab" onclick="filterComplaints('resolved', this)">Resolved</button>
+          <button class="filter-tab" onclick="filterComplaints('escalated', this)">Escalated</button>
+        </div>
+        <button class="btn-primary" onclick="openComplaintModal()">
+          <i class="fa-solid fa-plus"></i> File Complaint
+        </button>
+      </div>
+      <div class="complaint-list" id="complaintList">
+        <div class="empty-state">
+          <i class="fa-solid fa-circle-check" style="font-size:2.5rem; color:var(--teal-300);"></i>
+          <p>No complaints filed. Great job keeping things smooth!</p>
+        </div>
+      </div>
+    </section>
+ 
+    <!-- SMS NOTIFICATIONS PAGE -->
+    <section class="page" id="page-notifications">
+      <div class="page-actions-bar">
+        <h3 style="font-family: var(--font-display); color: var(--teal-700);">Parent SMS Notifications</h3>
+        <button class="btn-primary" onclick="openSMSModal()">
+          <i class="fa-solid fa-paper-plane"></i> Send SMS
+        </button>
+      </div>
+      <div class="sms-layout">
+        <div class="card sms-compose-card">
+          <h4 class="card-title">Compose & Send</h4>
+          <div class="form-group">
+            <label class="form-label">Select Trigger Event</label>
+            <select class="input-field" id="smsTemplateSelect" onchange="fillSMSTemplate()">
+              <option value="">— Choose a template —</option>
+              <option value="gatepass_approved">Gate Pass Approved</option>
+              <option value="gatepass_rejected">Gate Pass Rejected</option>
+              <option value="visitor_arrived">Visitor Arrived</option>
+              <option value="complaint_resolved">Complaint Resolved</option>
+              <option value="late_return">Late Return Alert</option>
+              <option value="custom">Custom Message</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Parent Phone Number</label>
+            <input type="tel" class="input-field" id="smsPhone" placeholder="+91 XXXXX XXXXX"/>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Student Name</label>
+            <input type="text" class="input-field" id="smsStudentName" placeholder="Student name"/>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Message Preview</label>
+            <textarea class="input-field" id="smsMessage" rows="4" placeholder="Message will appear here…"></textarea>
+          </div>
+          <button class="btn-primary full-width" onclick="logSMS()">
+            <i class="fa-solid fa-paper-plane"></i> Log & Send SMS
+          </button>
+        </div>
+        <div class="card">
+          <h4 class="card-title">SMS Log</h4>
+          <div id="smsLogList" class="empty-state">
+            <i class="fa-solid fa-comment-sms" style="font-size:2rem; color:var(--teal-300);"></i>
+            <p>No SMS sent yet.</p>
+          </div>
+        </div>
+      </div>
+    </section>
     
+    <!--  ATTENDANCE PAGE -->
+    <section class="page" id="page-attendance">
+      <div class="page-actions-bar">
+        <input type="date" class="input-field" id="attendanceDateSelect" style="max-width:200px;"/>
+        <button class="btn-primary" onclick="openStudentModal()">
+          <i class="fa-solid fa-plus"></i> Add Student
+        </button>
+      </div>
+      <div class="table-card">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Student Name</th>
+              <th>Room No.</th>
+              <th>Roll No.</th>
+              <th>Contact</th>
+              <th>Parent Phone</th>
+              <th>Status</th>
+              <th>Mark</th>
+            </tr>
+          </thead>
+          <tbody id="attendanceTableBody">
+            <tr><td colspan="7" class="table-empty">No students added. Click "Add Student" to register students.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+ 
+  </main>
+ 
+  <!-- MODALS  -->
+ 
+  <!-- Setup Modal -->
+  <div class="modal-overlay" id="modal-setup">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>Setup HostelSync</h3>
+        <button class="modal-close" onclick="closeModal('modal-setup')"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label class="form-label">Hostel Name</label>
+          <input type="text" class="input-field" id="setup-hostel" placeholder="e.g. Boys Hostel Block A"/>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Warden Name</label>
+          <input type="text" class="input-field" id="setup-warden" placeholder="Your full name"/>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Institution Name</label>
+          <input type="text" class="input-field" id="setup-institution" placeholder="College / University"/>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-primary" onclick="saveSetup()">Save Settings</button>
+      </div>
+    </div>
+  </div>
 </body>
